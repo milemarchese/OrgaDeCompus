@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -7,7 +8,7 @@
 const char* HELP_MSG = "Usage:\n\ttp0 -h\n\ttp0 -V\n\ttp0 [options]\nOptions:\n\t-V, --version 		Print version and quit.\n\t-h, --help 			Print this information.\n\t-o, --output 		Path to output file.\n\t-i, --input 		Path to input file.\n\t-d, --decode		Decode a base64-encoded file.\nExamples:\n\n\ttp0 -i input.txt -o output.txt";
 const char* VERSION_NUM = "2020\n";
 
-void to_binary(unsigned char in, unsigned char out[8]){
+void to_binary(char in, char out[8]){
 	for (int i = 7; i >= 0; i--) {
 		out[i] = in % 2;
 		in = in >> 1;
@@ -15,7 +16,7 @@ void to_binary(unsigned char in, unsigned char out[8]){
 }
 
 
-int to_decimal(unsigned char in[8], int in_n) {
+int to_decimal(char in[8], int in_n) {
 	int out = 0;
 	for (int i = 0; i < in_n; i++) {
 		out += in[i] ? (1 << (in_n - 1 - i)) : 0;
@@ -24,55 +25,40 @@ int to_decimal(unsigned char in[8], int in_n) {
 }
 
 
-void get_chars(unsigned char in[3], unsigned char out[4]) {
-	unsigned char binaryrep[24];
+void get_chars(char in[3], int n_in, char out[4]) {
+	char binaryrep[24] = {0};
 
-	for (int j = 0; j < 3; j++) {
+	for (int j = 0; j < n_in; j++) {
 		to_binary(in[j], &binaryrep[j*8]);
 	}
 
-	for (int k = 0; k < 4; k ++) {
+	for (int k = 0; k < 1 + n_in; k ++) {
 		out[k] = BASE64[to_decimal(&binaryrep[k*6], 6)];
+	}
+
+	for (int k = n_in + 1; k < 4; k ++) {
+		out[k] = '=';
 	}
 }
 
 void encode(FILE* in, FILE* out) {
 	char* line = NULL;
-	size_t n_lines = 0;
+	size_t n_line = 0;
 	ssize_t reads;
-	while ((reads = getline (&line, &n_lines, stdin) > 0)) {
+	while ((reads = getline(&line, &n_line, in) > 0)) {
+
 		int i = 0;
-		int j = 0;
-		char* line_out = malloc(sizeof(char) * (n_lines * 4/3));
+		while (line[i] != '\0') {
+			int buffer = 0;
+			while (line[i + buffer] != '\0' && buffer < 3) buffer++;
 
-		while (line[i] != '\n' && n_lines - i > 0) {
-			// while (line[i] != '\n' && n_lines - i > 0) { 
-			// if (n_lines - i < 3) {
-			// 	unsigned char new_line[3] = {'='};
-			// 	for (int k = 0; k < n_lines - i; k++) {
-			// 		new_line[k] = line[i + k];
-			// 	}
-				
-			// 	get_chars(new_line, &line_out[j]);
-			// }
-			// else {
-			// get_chars(&line[i], &line_out[j]);
-			// }
-			// i+=3;
-			// j+=4;
-			
-			get_chars(&line[i], &line_out[j]);
-
-			i+=3;
-			j+=4;
+			char out[5] = {'\0'};
+			get_chars(&line[i], buffer, out);
+			i += buffer;
+			printf("%s", out);
 		}
-		line_out[j] = '\0';
-
-		// Print in output file the representation in Base64
-		printf("%s\n", line_out);
-		free (line_out);
 	}
-	free (line);
+	free(line);
 
 }
 
