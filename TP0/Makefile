@@ -6,7 +6,7 @@ TEST_EXEC := bash pruebas.sh
 
 EXEC = tp0
 CC = gcc
-CFLAGS = -std=c99 -g -Wall -Wconversion -Wtype-limits
+CFLAGS = -std=c99 -g -Wall -Wtype-limits
 
 build: main.c utils.h
 	$(CC) $(CFLAGS) *.c -o $(EXEC)
