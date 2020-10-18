@@ -88,16 +88,20 @@ int process_file(char* in_file, char* out_file, convert_line_t convert){
   FILE* in = stdin;
   FILE* out = stdout;
 
-  in = fopen(in_file, "r");
-  if (!in) {
-    fprintf(stderr, "%s", INVALIDIN);
-    return 1;
+  if (in_file){
+    in = fopen(in_file, "r");
+    if (!in) {
+      fprintf(stderr, "%s", INVALIDIN);
+      return 1;
+    }
   }
-  out = fopen(out_file, "w");
-  if (!out) {
-    fprintf(stderr, "%s", INVALIDOUT);
-    if (in) fclose(in);
-    return 1;
+  if (out_file){
+    out = fopen(out_file, "w");
+    if (!out) {
+      fprintf(stderr, "%s", INVALIDOUT);
+      if (in) fclose(in);
+      return 1;
+    }
   }
 	char* line = NULL;
 	size_t n_line = 0;

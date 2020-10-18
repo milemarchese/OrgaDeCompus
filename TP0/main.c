@@ -37,8 +37,8 @@ int validate_parameters(int argc, char* argv[], char** in, char** out, convert_l
 
 
 int main(int argc, char* argv[]){
-	char* in;
-	char* out;
+	char* in = NULL;
+	char* out = NULL;
 	convert_line_t convert = encode_line;
 	int arg = validate_parameters(argc, argv, &in, &out, &convert);
 	if (arg > 0){
