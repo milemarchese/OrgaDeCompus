@@ -1,7 +1,6 @@
 TP0_DIR := TP0
-IN_DIR := input
-IN_TEST := $(IN_DIR)/in.txt
 TEST_DIR := test
+IN_TEST := $(TEST_DIR)/01_in
 TEST_EXEC := bash pruebas.sh
 
 EXEC = tp0
@@ -15,10 +14,13 @@ run: build
 	cat $(IN_TEST) | ./$(EXEC)
 
 clean:
-	rm -f *.o $(EXEC)
+	rm -f *.o *.s $(EXEC)
 
 valgrind:  build
 	cat $(IN_TEST) | valgrind --leak-check=full --show-leak-kinds=all ./$(EXEC)
 
 grade: build
 	cd $(TEST_DIR) && $(TEST_EXEC)
+
+assembly:
+	$(CC) $(CFLAG) -S *.c

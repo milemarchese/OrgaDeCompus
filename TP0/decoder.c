@@ -38,14 +38,14 @@ void encode_chars(char in[3], int n_in, char out[4]){
 }
 
 
-void encode_line(char* line, FILE* out_file){
+void encode_string(char* string, FILE* out_file){
 	int i = 0;
-	while (line[i] != '\0'){
+	while (string[i] != '\0'){
 		int buffer = 0;
-		while (line[i + buffer] != '\0' && buffer < 3) buffer++;
+		while (string[i + buffer] != '\0' && buffer < 3) buffer++;
 
 		char out[5] = {'\0'};
-		encode_chars(&line[i], buffer, out);
+		encode_chars(&string[i], buffer, out);
 		i += buffer;
 		fprintf(out_file, "%s", out);
 	}
@@ -70,21 +70,21 @@ void decode_chars(char in[4], int n_in, char out[3]){
 }
 
 
-void decode_line(char* line, FILE* out_file){
+void decode_string(char* string, FILE* out_file){
 	int i = 0;
-	while (line[i] != '\0' && line[i] != '='){
+	while (string[i] != '\0' && string[i] != '='){
 		int buffer = 0;
-		while (line[i + buffer] != '=' && line[i + buffer] != '\0' && buffer < 4) buffer++;
+		while (string[i + buffer] != '=' && string[i + buffer] != '\0' && buffer < 4) buffer++;
 
 		char out[4] = {'\0'};
-		decode_chars(&line[i], buffer, out);
+		decode_chars(&string[i], buffer, out);
 		i += buffer;
 		fprintf(out_file, "%s", out);
 	}
 }
 
 
-int process_file(char* in_file, char* out_file, convert_line_t convert){
+int process_file(char* in_file, char* out_file, convert_string_t convert){
 	FILE* in = stdin;
 	FILE* out = stdout;
 

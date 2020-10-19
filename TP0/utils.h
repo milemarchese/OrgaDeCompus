@@ -1,8 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-typedef void (*convert_line_t) (char*, FILE*);
-
 // Flags
 #define H "-h"
 #define V "-V"
