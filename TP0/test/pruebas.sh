@@ -7,7 +7,7 @@ PROGRAMA="../tp0"
 RET=0
 
 # Correr con diff y sin Valgrind.
-echo "Ejecuciȯn de pruebas unitarias de encodeo por stdin y stdout:"
+echo "Ejecución de pruebas unitarias de encodeo por stdin y stdout:"
 for x in *_in; do
     b=${x%_in}
     printf "${b} "
@@ -24,7 +24,7 @@ if [[ $RET -ne 0 ]]; then
 fi
 
 
-echo "Ejecuciȯn de pruebas unitarias de encodeo por archivos:"
+echo "Ejecución de pruebas unitarias de encodeo por archivos:"
 for x in *_in; do
     b=${x%_in}
     printf "${b} "
@@ -42,7 +42,7 @@ fi
 
 
 # Correr con diff y sin Valgrind.
-echo "Ejecuciȯn de pruebas unitarias de decodificado por stdin y stdout:"
+echo "Ejecución de pruebas unitarias de decodificado por stdin y stdout:"
 for x in *_out; do
     b=${x%_out}
     printf "${b} "
@@ -58,7 +58,7 @@ if [[ $RET -ne 0 ]]; then
 fi
 
 
-echo "Ejecuciȯn de pruebas unitarias de decodificado por archivos:"
+echo "Ejecución de pruebas unitarias de decodificado por archivos:"
 for x in *_out; do
     b=${x%_out}
     printf "${b} "
@@ -77,7 +77,7 @@ fi
 
 
 echo ""
-echo "Ejecuciȯn de pruebas unitarias de encodeo con Valgrind:"
+echo "Ejecución de pruebas unitarias de encodeo con Valgrind:"
 echo ""
 # Correr con Valgrind y sin diff.
 for x in *_in; do
@@ -91,7 +91,7 @@ done
 
 
 echo ""
-echo "Ejecuciȯn de pruebas unitarias de decodificado con Valgrind:"
+echo "Ejecución de pruebas unitarias de decodificado con Valgrind:"
 echo ""
 # Correr con Valgrind y sin diff.
 for x in *_out; do

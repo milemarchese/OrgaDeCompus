@@ -85,32 +85,37 @@ void decode_line(char* line, FILE* out_file){
 
 
 int process_file(char* in_file, char* out_file, convert_line_t convert){
-  FILE* in = stdin;
-  FILE* out = stdout;
+	FILE* in = stdin;
+	FILE* out = stdout;
 
-  if (in_file){
-    in = fopen(in_file, "r");
-    if (!in) {
-      fprintf(stderr, "%s", INVALIDIN);
-      return 1;
-    }
-  }
-  if (out_file){
-    out = fopen(out_file, "w");
-    if (!out) {
-      fprintf(stderr, "%s", INVALIDOUT);
-      if (in) fclose(in);
-      return 1;
-    }
-  }
-	char* line = NULL;
-	size_t n_line = 0;
-	ssize_t reads;
-	while ((reads = getline(&line, &n_line, in) > 0)){
-		convert(line, out);
+	if (in_file){
+		in = fopen(in_file, "r");
+		if (!in) {
+			fprintf(stderr, "%s", INVALIDIN);
+			return 1;
+		}
 	}
-	free(line);
-  fclose(in);
-  fclose(out);
-  return 0;
+	if (out_file){
+		out = fopen(out_file, "w");
+		if (!out) {
+			fprintf(stderr, "%s", INVALIDOUT);
+			if (in) fclose(in);
+			return 1;
+		}
+	}
+	char buffer[25] = {'\0'};
+	while (!feof(in)) {
+		for (int i = 0; i < 24; i++) {
+			char c = fgetc(in);
+			if (c == EOF) {
+				buffer[i] = '\0';
+				break;
+			}
+			buffer[i] = c;
+		}
+		convert(buffer, out);
+	}
+	fclose(in);
+	fclose(out);
+	return 0;
 }
