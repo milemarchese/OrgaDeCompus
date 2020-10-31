@@ -25,5 +25,6 @@ grade: build
 assembly:
 	$(CC) $(CFLAG) -S *.c
 
-recode: build
+reencode: build
 	cat $(FILE) | ./tp0 | ./tp0 -d > $(FILE).decoded
+	diff $(FILE) $(FILE).decoded

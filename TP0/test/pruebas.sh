@@ -103,4 +103,29 @@ for x in *_out; do
         echo "OK" || { RET=$?; echo "ERROR"; }
 done
 
+
+echo ""
+echo "Ejecución del programa para encodear y decodificar archivos por /dev/urandom"
+echo ""
+
+for n in {1..7..1}; do
+    for x in {0..5..1}; do
+        bytes=$((10**n + x))
+        printf "${bytes} bytes "
+        head -c ${bytes} /dev/urandom > out_tmp
+        cat out_tmp | $PROGRAMA | $PROGRAMA -d > out_tp0
+        diff out_tmp out_tp0 &>/dev/null
+        if [ $? -eq 0 ]; then
+            echo "OK"
+        else
+            echo "ERROR"
+            exit $?
+        fi
+    done
+done
+
+rm out_tmp
+rm out_tp0
+rm err_tmp
+
 exit $RET

@@ -36,10 +36,7 @@ void encode_string(char* string, int string_len, FILE* out_file){
 
 
 void decode_chars(char in[4], int n_in, char out[3]){
-	for (int i = n_in; i < 4; i++) {
-		in[i] = 0;
-	}
-	
+
 	for (int j = 0; j < n_in; j++){
 		for (int i = 0; i < 64; i++){
 			if (in[j] == BASE64[i]) {
@@ -57,16 +54,16 @@ void decode_chars(char in[4], int n_in, char out[3]){
 
 void decode_string(char* string, int string_len, FILE* out_file){
 	int i = 0;
-	while (i < string_len && string[i] != '=') {
+	while (i < string_len && string[i] != '=' && string[i] != '\0') {
 		int buffer = 0;
-		while (i + buffer < string_len && string[i + buffer] != '=' && buffer < 4) buffer++;
+		while (i + buffer < string_len && string[i + buffer] != '=' && string[i + buffer] != '\0' && buffer < 4) buffer++;
 
 		char out[4] = {'\0'};
 		decode_chars(&string[i], buffer, out);
 		i += buffer;
 
 		for (int j = 0; j < buffer - 1; j++) {
-			fprintf(out_file,"%c", (unsigned char) out[j]);
+			fprintf(out_file, "%c", out[j]);
 		}
 	}
 }
