@@ -4,35 +4,35 @@ static char BASE64[64]= {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 
 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
-static void to_binary(char in, char out[8], int n_bits){
-	for (int i = n_bits - 1; i >= 0; i--) {
-		out[i] = in % 2;
-		in = in >> 1;
-	}
-}
+// static void to_binary(char in, char out[8], int n_bits){
+// 	for (int i = n_bits - 1; i >= 0; i--) {
+// 		out[i] = in % 2;
+// 		in = in >> 1;
+// 	}
+// }
 
 
-static int to_decimal(char in[8], int in_n){
-	int out = 0;
-	for (int i = 0; i < in_n; i++) {
-		out += in[i] ? (1 << (in_n - 1 - i)) : 0;
-	}
-	return out;
-}
+// static int to_decimal(char in[8], int in_n){
+// 	int out = 0;
+// 	for (int i = 0; i < in_n; i++) {
+// 		out += in[i] ? (1 << (in_n - 1 - i)) : 0;
+// 	}
+// 	return out;
+// }
 
 
 void encode_chars(char in[3], int n_in, char out[4]){
-	char binaryrep[24] = {0};
 
-	for (int j = 0; j < n_in; j++){
-		to_binary(in[j], &binaryrep[j*8], 8);
-	}
+	out[0] = (in[0] & 0xFC) >> 2;
+	out[1] = ((in[0] & 0x03) << 4) | ((in[1] & 0xF0) >> 4);
+	out[2] = ((in[1] & 0x0F) << 2) | ((in[2] & 0xC0) >> 6);
+	out[3] = (in[2] & 0x3F);
 
 	for (int k = 0; k < 1 + n_in; k ++){
-		out[k] = BASE64[to_decimal(&binaryrep[k*6], 6)];
+		out[k] = BASE64[(unsigned char) out[k]];
 	}
 
-	for (int k = n_in + 1; k < 4; k ++){
+	for (int k = n_in + 1; k < 4; k++){
 		out[k] = '=';
 	}
 }
@@ -53,20 +53,27 @@ void encode_string(char* string, FILE* out_file){
 
 
 void decode_chars(char in[4], int n_in, char out[3]){
-	char binaryrep[24] = {0};
-
+	
 	for (int j = 0; j < n_in; j++){
 		for (int i = 0; i < 64; i++){
 			if (in[j] == BASE64[i]) {
-				to_binary(i, &binaryrep[j*6], 6);
+				in[j] = i;
 				break;
 			}
+			// if (in[j] == '=') {
+			// 	in[j] = 0;
+			// 	break;
+			// }
 		}
 	}
 
-	for (int k = 0; k < n_in - 1; k ++){
-		out[k] = to_decimal(&binaryrep[k*8], 8);
+	// Indice del caracter correspondiente en BASE64 a ASCII
+	for (int j = n_in; j < 3; j++) {
+		in[j] = '\0';
 	}
+	out[0] = (in[0] << 2) | ((in[1] & 0x30) >> 4);
+	out[1] = (in[1] << 4) | ((in[2] & 0x3C) >> 2);
+	out[2] = (in[2] << 6) | in[3];
 }
 
 
