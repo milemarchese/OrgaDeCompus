@@ -56,7 +56,7 @@ void decode_string(char* string, int string_len, FILE* out_file){
 	int i = 0;
 	while (i < string_len && string[i] != '=' && string[i] != '\0') {
 		int buffer = 0;
-		while (i + buffer < string_len && string[i + buffer] != '=' && string[i + buffer] != '\0' && buffer < 4) buffer++;
+		while (string[i + buffer] != '=' && string[i + buffer] != '\0' && buffer < 4) buffer++;
 
 		char out[4] = {'\0'};
 		decode_chars(&string[i], buffer, out);
