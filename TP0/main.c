@@ -7,7 +7,7 @@
 #include "utils.h"
 
 const char* HELP_MSG = "Usage:\n\ttp0 -h\n\ttp0 -V\n\ttp0 [options]\nOptions:\n\t-V, --version 		Print version and quit.\n\t-h, --help 			Print this information.\n\t-o, --output 		Path to output file.\n\t-i, --input 		Path to input file.\n\t-d, --decode		Decode a base64-encoded file.\nExamples:\n\n\ttp0 -i input.txt -o output.txt\n";
-const char* VERSION_NUM = "2020\n";
+const char* VERSION_NUM = "2020.2\n";
 
 int validate_parameters(int argc, char* argv[], char** in, char** out, convert_string_t* convert){
 	for (int i = 1; i < argc; i++){
