@@ -18,6 +18,6 @@
 #define INVALIDOUT "Unable to create output file\n"
 #define INVALIDRANGE "Invalid range"
 
-#define MAXINIT 1000
+#define MAXINIT 10000
 #define FILE_STDOUT "-"
 #endif //UTILS_H

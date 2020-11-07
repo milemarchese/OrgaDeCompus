@@ -4,8 +4,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "utils.h"
 #include "operations.h"
+#include "utils.h"
+
+#define OPERATION_MCD 0
+#define OPERATION_MCM 1
+#define OPERATION_BOTH 2
 
 const char* HELP_MSG = "Usage:\n\tcommon -h\n\tcommon -V\n\tcommon [options] M N\nOptions:\n\t-h, --help Prints usage information.\n\t-V, --version Prints version information.\n\t-o, --output Path to output file.\n\t-d --divisor Just the divisor\n\t-m --multiple Just the multiple";
 const char* VERSION_NUM = "2020\n";
@@ -64,14 +68,18 @@ int min(int n1, int n2) {
 
 int main(int argc, char* argv[]) {
 	FILE* out = stdout;
-	int num1;
-	int num2;
+	int num1 = -1;
+	int num2 = -1;
 	int operation = OPERATION_BOTH;
 	int arg = validate_parameters(argc, argv, &out, &operation, &num1, &num2);
 	if (arg > 0) {
 		return arg;
 	} else if (arg < 0){
 		return 0;
+	}
+	if (num1 == -1 || num2 == -1) {
+		fprintf(stderr, "Missing numbers to process\n");
+		return 1;
 	}
 
 	int n_min = min(num1, num2);

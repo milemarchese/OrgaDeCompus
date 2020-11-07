@@ -1,6 +1,3 @@
-#include "operations.h"
-#include <stdio.h>
-
 
 int mcd(int a, int b) {
 	int aux;
