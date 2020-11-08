@@ -9,7 +9,7 @@ CFLAGS_MIPS = -g -O0 -mips32 -mlong32 -mabi=32
 build: main.c utils.h operations.c
 	$(CC) $(CFLAGS)  main.c operations.c -o $(EXEC)
 
-mips-build: main.c utils.h operations.S
+mips-build: main.c utils.h mcm.S mcd.S
 	$(CC) $(CFLAGS_MIPS) main.c operations.S -o $(EXEC)
 
 clean:
@@ -17,6 +17,10 @@ clean:
 
 grade: build
 	cd $(TEST_DIR) && $(TEST_EXEC)
+
+remote-assembly:
+	scp -P 5555 -r ../TP1/* root@localhost:/root/TP1
+	ssh -p 5555 root@localhost "cd /root/TP1 && $(CC) $(CFLAG) -S *.c && cat operations.s"
 
 
 remote-build: build
