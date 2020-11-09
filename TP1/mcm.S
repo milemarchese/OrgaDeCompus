@@ -1,35 +1,42 @@
 #include <sys/regdef.h>
-#define SS 16
+#define SS 24
 
 //SRA
+#define O_PAD1 20
+#define O_RA 16
 #define O_FP 12
 #define O_GP 8
 
 //LTA
-#define O_A0 4
-#define O_A1 0
+#define O_PAD2 4
+#define O_AUX 0
 
 .text
+/* int mcd(int a, int b) */
 .align 2
 .globl mcm
 .ent mcm
 mcm:
-	// Creacion del stack
+	// Stack wind
 	subu sp, sp, SS
+	sw ra, O_RA(sp)
 	sw fp, O_FP(sp)
 	sw gp, O_GP(sp)
 	move fp, sp
 
-	// Cargo los argumentos
+	// TODO: Verificar overflow
+	mul t0, a0, a1	// t0 = a0 * a1
+	sw  t0, O_AUX(fp)
 
+	jal mcd 					// mcd()
 
+	lw  t0, O_AUX(fp)
+	div v0, t0, v0	// t1 = t0 / v0(result)
 
-	// Return 1
-	li v0, 1
-
-	// Desarmo el stack
+	// Stack unwind
 	lw gp, O_GP(sp)
 	lw fp, O_FP(sp)
+	lw ra, O_RA(sp)
 	addiu sp,sp,SS
 	jr ra
 
