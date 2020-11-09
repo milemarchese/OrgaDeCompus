@@ -1,3 +1,4 @@
+#include <sys/regdef.h>
 #define SS  16
 
 //SRA
@@ -8,6 +9,7 @@
 #define O_A 4
 #define O_B 0
 
+.text
 /* int mcd(int a, int b) */
 .align 2
 .globl mcd

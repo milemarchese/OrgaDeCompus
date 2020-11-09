@@ -10,7 +10,7 @@ build: main.c utils.h operations.c
 	$(CC) $(CFLAGS)  main.c operations.c -o $(EXEC)
 
 mips-build: main.c utils.h mcm.S mcd.S
-	$(CC) $(CFLAGS_MIPS) main.c operations.S -o $(EXEC)
+	$(CC) $(CFLAGS_MIPS) main.c mcm.S mcd.S -o $(EXEC)
 
 clean:
 	rm -f *.o *.s $(EXEC)
