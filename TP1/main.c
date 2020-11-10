@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <limits.h>
 #include "operations.h"
 #include "utils.h"
 
@@ -14,8 +15,10 @@
 const char* HELP_MSG = "Usage:\n\tcommon -h\n\tcommon -V\n\tcommon [options] M N\nOptions:\n\t-h, --help Prints usage information.\n\t-V, --version Prints version information.\n\t-o, --output Path to output file.\n\t-d --divisor Just the divisor\n\t-m --multiple Just the multiple";
 const char* VERSION_NUM = "2020\n";
 
+int error;
+
 int valid_range(int num) {
-	return num >= 2 && num <= MAXINIT;
+	return num >= 2 && num <= MAXINT;
 }
 
 int validate_parameters(int argc, char* argv[], FILE** out, int* operation, int* num1, int* num2) {
@@ -85,11 +88,23 @@ int main(int argc, char* argv[]) {
 	int n_min = min(num1, num2);
 	int n_max = max(num1, num2);
 	if (operation == OPERATION_MCD || operation == OPERATION_BOTH) {
-		fprintf(out, "%d\n", mcd(n_min, n_max));
+		int res = mcd(n_min, n_max);
+		if (error == RESULT_SUCCESSFUL) {
+			fprintf(out, "%d\n", res);
+		} else {
+			fprintf(stderr, "Operation failed\n");
+		}
 	}
 
 	if (operation == OPERATION_MCM || operation == OPERATION_BOTH) {
-		fprintf(out, "%d\n", mcm(n_min, n_max));
+		int res = mcm(n_min, n_max);
+		if (error == RESULT_SUCCESSFUL) {
+			fprintf(out, "%d\n", res);
+		} else if (error == OVERFLOW_CODE) {
+			fprintf(out, "Overflow error\n");
+		} else {
+			fprintf(out, "Operation failed\n");
+		}
 	}
 	return 0;
 }

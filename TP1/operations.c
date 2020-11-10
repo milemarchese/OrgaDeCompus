@@ -1,3 +1,6 @@
+#include "operations.h"
+
+extern int error;
 
 int mcd(int a, int b) {
 	int aux;
@@ -11,5 +14,10 @@ int mcd(int a, int b) {
 
 
 int mcm(int a, int b) {
+	int x = a * b;
+	if (x / a != b) {
+		error = OVERFLOW_CODE;
+		return 0;
+	}
 	return a*b/mcd(a, b);
 }

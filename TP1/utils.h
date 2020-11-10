@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <limits.h>
+
 // Flags
 #define H "-h"
 #define V "-V"
@@ -18,6 +20,13 @@
 #define INVALIDOUT "Unable to create output file\n"
 #define INVALIDRANGE "Invalid range"
 
-#define MAXINIT 10000
+#define MAXINT INT_MAX
 #define FILE_STDOUT "-"
+
+#define OPERATION_MCD 0
+#define OPERATION_MCM 1
+#define OPERATION_BOTH 2
+
+#define RESULT_SUCCESSFUL 0
+#define OVERFLOW_CODE 1
 #endif //UTILS_H

@@ -1,4 +1,5 @@
 #include <sys/regdef.h>
+#include "utils.h"
 #define SS 24
 
 //SRA
@@ -24,14 +25,21 @@ mcm:
 	sw gp, O_GP(sp)
 	move fp, sp
 
-	// TODO: Verificar overflow
-	mul t0, a0, a1	// t0 = a0 * a1
+	mul t0, a0, a1				// t0 = a0 * a1
+
+	// Overflow check
+	div t1, t0, a0				// t1 = t0 / a0
+	bne t1, a1, _error
+
 	sw  t0, O_AUX(fp)
 
-	jal mcd 					// mcd()
+	jal mcd 							// mcd()
 
 	lw  t0, O_AUX(fp)
-	div v0, t0, v0	// t1 = t0 / v0(result)
+	div v0, t0, v0				// v0 = t0 / v0(result)
+
+
+_return:
 
 	// Stack unwind
 	lw gp, O_GP(sp)
@@ -39,5 +47,12 @@ mcm:
 	lw ra, O_RA(sp)
 	addiu sp,sp,SS
 	jr ra
+
+_error:
+	la t0, error
+	li t1, OVERFLOW_CODE
+	sw t1, 0(t0)
+	li v0, 0
+	b _return
 
 .end mcm

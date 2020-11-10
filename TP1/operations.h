@@ -8,11 +8,13 @@
 #include <stdlib.h>
 #include "utils.h"
 
-#define OPERATION_MCD 0
-#define OPERATION_MCM 1
-#define OPERATION_BOTH 2
+// Pre: Takes two numbers, both a, b >= 2  and  a >= b.
+// Post: Returns the greatest common divisor between the two numbers.
+int mcd (int a, int b);
 
-int mcd (int num1, int num2);
-int mcm (int num1, int num2);
+
+// Pre: Takes two numbers, both a, b >= 2  and  a >= b.
+// Post: Returns the least common multiple between the two numbers.
+int mcm (int a, int b);
 
 #endif
