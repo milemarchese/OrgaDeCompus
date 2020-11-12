@@ -28,7 +28,7 @@ mcm:
 	mul t0, a0, a1				// t0 = a0 * a1
 
 	// Overflow check
-	div t1, t0, a0				// t1 = t0 / a0
+	divu t1, t0, a0				// t1 = t0 / a0
 	bne t1, a1, _error
 
 	sw  t0, O_AUX(fp)

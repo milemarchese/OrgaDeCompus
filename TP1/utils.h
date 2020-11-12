@@ -20,7 +20,7 @@
 #define INVALIDOUT "Unable to create output file\n"
 #define INVALIDRANGE "Invalid range"
 
-#define MAXINT INT_MAX
+#define MAXINT UINT_MAX
 #define FILE_STDOUT "-"
 
 #define OPERATION_MCD 0

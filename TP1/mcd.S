@@ -31,7 +31,7 @@ _loop:
 	lw		t1, O_B(fp)				// t1 <- b
 	beq		t1, $0, _return		// return if b == 0
 
-	rem		t2, t0,	t1				// t2 <- a % b
+	remu	t2, t0,	t1				// t2 <- a % b
 	sw		t1, O_A(fp)				// a <- t1 (a = b)
 	sw		t2, O_B(fp)				// b <- t2 (b = a % b)
 	b		_loop								// branch always to _loop

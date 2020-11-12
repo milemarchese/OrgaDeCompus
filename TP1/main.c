@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <limits.h>
+#include <errno.h>
 #include "operations.h"
 #include "utils.h"
 
@@ -17,13 +18,13 @@ const char* VERSION_NUM = "2020\n";
 
 int error;
 
-int valid_range(int num) {
+int valid_range(unsigned long num) {
 	return num >= 2 && num <= MAXINT;
 }
 
-int validate_parameters(int argc, char* argv[], FILE** out, int* operation, int* num1, int* num2) {
-    int num1_tmp;
-    int num2_tmp;
+int validate_parameters(int argc, char* argv[], FILE** out, int* operation, unsigned int* num1, unsigned int* num2) {
+  unsigned long int num1_tmp;
+  unsigned long int num2_tmp;
 	for (int i = 1; i < argc; i++){
 		if (strcmp(H, argv[i]) == 0 || strcmp(HELP, argv[i]) == 0) {
 			fprintf(stdout, "%s", HELP_MSG);
@@ -41,18 +42,17 @@ int validate_parameters(int argc, char* argv[], FILE** out, int* operation, int*
 			*operation = OPERATION_MCD;
 		} else if (strcmp(M, argv[i]) == 0 || strcmp(MULTIPLE, argv[i]) == 0) {
 			*operation = OPERATION_MCM;
-		} else if (i + 1 < argc && (num1_tmp = atoi(argv[i])) != 0 && (num2_tmp = atoi(argv[i+1])) != 0 ) {
-            int err_range = valid_range(num1_tmp) && valid_range(num2_tmp);
-			if (!err_range) {
-				fprintf(stderr, "%s %s\n", INVALIDRANGE, argv[i]);
+		} else if (i + 1 < argc && (num1_tmp = strtoul(argv[i], NULL, 10)) != 0 && (num2_tmp = strtoul(argv[i+1], NULL, 10)) != 0) {
+			int err_range = valid_range(num1_tmp) && valid_range(num2_tmp);
+			if (!err_range || errno == ERANGE || errno == EINVAL) {
+				fprintf(stderr, "%s\n", INVALIDRANGE);
 				return 1;
 			}
 			*num1 = num1_tmp;
 			*num2 = num2_tmp;
 			i++;
-		}
-		else {
-			fprintf(stderr, "%s %s\n", INVALIDARG, argv[i]);
+		} else {
+			fprintf(stderr, "%s\n", INVALIDARG);
 			return 1;
 		}
 	}
@@ -60,19 +60,19 @@ int validate_parameters(int argc, char* argv[], FILE** out, int* operation, int*
 }
 
 
-int max(int n1, int n2) {
+unsigned int max(unsigned int n1, unsigned int n2) {
 	return n1 < n2 ? n2 : n1;
 }
 
-int min(int n1, int n2) {
+unsigned int min(unsigned int n1, unsigned int n2) {
 	return n1 < n2 ? n1 : n2;
 }
 
 
 int main(int argc, char* argv[]) {
 	FILE* out = stdout;
-	int num1 = -1;
-	int num2 = -1;
+	unsigned int num1 = -1;
+	unsigned int num2 = -1;
 	int operation = OPERATION_BOTH;
 	int arg = validate_parameters(argc, argv, &out, &operation, &num1, &num2);
 	if (arg > 0) {
@@ -85,21 +85,21 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	int n_min = min(num1, num2);
-	int n_max = max(num1, num2);
+	unsigned int n_min = min(num1, num2);
+	unsigned int n_max = max(num1, num2);
 	if (operation == OPERATION_MCD || operation == OPERATION_BOTH) {
-		int res = mcd(n_min, n_max);
+		unsigned int res = mcd(n_min, n_max);
 		if (error == RESULT_SUCCESSFUL) {
-			fprintf(out, "%d\n", res);
+			fprintf(out, "%u\n", res);
 		} else {
 			fprintf(stderr, "Operation failed\n");
 		}
 	}
 
 	if (operation == OPERATION_MCM || operation == OPERATION_BOTH) {
-		int res = mcm(n_min, n_max);
+		unsigned int res = mcm(n_min, n_max);
 		if (error == RESULT_SUCCESSFUL) {
-			fprintf(out, "%d\n", res);
+			fprintf(out, "%u\n", res);
 		} else if (error == OVERFLOW_CODE) {
 			fprintf(out, "Overflow error\n");
 		} else {

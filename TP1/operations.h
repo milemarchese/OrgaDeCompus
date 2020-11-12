@@ -8,13 +8,15 @@
 #include <stdlib.h>
 #include "utils.h"
 
-// Pre: Takes two numbers, both a, b >= 2  and  a >= b.
+// Pre: Takes two numbers, where a >= 2, b >= 2  and  a >= b.
 // Post: Returns the greatest common divisor between the two numbers.
-int mcd (int a, int b);
+unsigned int mcd (unsigned int a, unsigned int b);
 
 
-// Pre: Takes two numbers, both a, b >= 2  and  a >= b.
+// Pre: Takes two numbers, both a >= 2, b >= 2  and  a >= b.
 // Post: Returns the least common multiple between the two numbers.
-int mcm (int a, int b);
+// If an overflow occurs while multiplying a and b, returns 0
+// and the global variable 'error' is set to OVERFLOW_CODE.
+unsigned int mcm (unsigned int a, unsigned int b);
 
 #endif
