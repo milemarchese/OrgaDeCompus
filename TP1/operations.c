@@ -3,7 +3,7 @@
 extern int error;
 
 unsigned int mcd(unsigned int a, unsigned int b) {
-	int aux;
+	unsigned int aux;
 	while (b != 0) {
 		aux = b;
 		b = a % b;

@@ -19,7 +19,7 @@ const char* VERSION_NUM = "2020\n";
 int error;
 
 int valid_range(unsigned long num) {
-	return num >= 2 && num <= MAXINT;
+	return num >= 2 && num < MAXINT;
 }
 
 int validate_parameters(int argc, char* argv[], FILE** out, int* operation, unsigned int* num1, unsigned int* num2) {
@@ -45,7 +45,7 @@ int validate_parameters(int argc, char* argv[], FILE** out, int* operation, unsi
 		} else if (i + 1 < argc && (num1_tmp = strtoul(argv[i], NULL, 10)) != 0 && (num2_tmp = strtoul(argv[i+1], NULL, 10)) != 0) {
 			int err_range = valid_range(num1_tmp) && valid_range(num2_tmp);
 			if (!err_range || errno == ERANGE || errno == EINVAL) {
-				fprintf(stderr, "%s\n", INVALIDRANGE);
+				fprintf(stdout, "%s\n", INVALIDRANGE);
 				return 1;
 			}
 			*num1 = num1_tmp;
@@ -71,8 +71,8 @@ unsigned int min(unsigned int n1, unsigned int n2) {
 
 int main(int argc, char* argv[]) {
 	FILE* out = stdout;
-	unsigned int num1 = -1;
-	unsigned int num2 = -1;
+	unsigned int num1 = 0;
+	unsigned int num2 = 0;
 	int operation = OPERATION_BOTH;
 	int arg = validate_parameters(argc, argv, &out, &operation, &num1, &num2);
 	if (arg > 0) {
@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
 	} else if (arg < 0){
 		return 0;
 	}
-	if (num1 == -1 || num2 == -1) {
+	if (num1 == 0 || num2 == 0) {
 		fprintf(stderr, "Missing numbers to process\n");
 		return 1;
 	}
