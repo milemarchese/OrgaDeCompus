@@ -9,6 +9,11 @@
 #define O_A 4
 #define O_B 0
 
+//Callers ABA
+#define O_A0 (SS)
+#define O_A1 (SS + 4)
+
+
 .text
 /* int mcd(int a, int b) */
 .align 2
@@ -22,6 +27,10 @@ mcd:
 	move	fp, sp
 
 	// Store arguments
+	sw		a0, O_A0(fp)
+	sw		a1, O_A1(fp)
+
+	// Store initial value for temporal variables
 	sw		a0, O_A(fp)
 	sw		a1, O_B(fp)
 
@@ -29,7 +38,7 @@ _loop:
 
 	lw		t0, O_A(fp)				// t0 <- a
 	lw		t1, O_B(fp)				// t1 <- b
-	beq		t1, $0, _return		// return if b == 0
+	beq		t1, $0, _return			// return if b == 0
 
 	remu	t2, t0,	t1				// t2 <- a % b
 	sw		t1, O_A(fp)				// a <- t1 (a = b)

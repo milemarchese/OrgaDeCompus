@@ -1,16 +1,20 @@
 #include <sys/regdef.h>
 #include "utils.h"
-#define SS 24
+#define SS 40
 
 //SRA
-#define O_PAD1 20
-#define O_RA 16
-#define O_FP 12
-#define O_GP 8
+#define O_PAD1 36
+#define O_RA 32
+#define O_FP 28
+#define O_GP 24
 
 //LTA
-#define O_PAD2 4
-#define O_AUX 0
+#define O_PAD2 20
+#define O_AUX 16
+
+//Callers ABA
+#define O_A0 (SS)
+#define O_A1 (SS + 4)
 
 .text
 /* int mcd(int a, int b) */
@@ -24,6 +28,10 @@ mcm:
 	sw fp, O_FP(sp)
 	sw gp, O_GP(sp)
 	move fp, sp
+
+	// Store arguments
+	sw		a0, O_A0(fp)
+	sw		a1, O_A1(fp)
 
 	mul t0, a0, a1				// t0 = a0 * a1
 
