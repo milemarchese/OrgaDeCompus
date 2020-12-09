@@ -65,9 +65,8 @@ unsigned int find_lru(int setnum) {
 }
 
 
-unsigned int is_dirty(int way, int setnum) {
-	// Your code here
-	return 0;
+unsigned int is_dirty(int way, int blocknum) {
+	return cache.cache[blocknum][way].bit_dirty;
 }
 
 

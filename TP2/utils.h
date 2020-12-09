@@ -17,10 +17,17 @@
 #define CACHESIZE "--cachesize"
 #define BLOCKSIZE "--blocksize"
 
+// Command
+#define INIT "init"
+#define WRITE "W"
+#define READ "R"
+#define MISSRATE "MR"
+
 // Error messages
 #define INVALIDARG "Invalid argument"
 #define INVALIDOUT "Unable to create output file\n"
 #define INVALIDRANGE "Invalid range"
+#define INVALIDINPUT "Invalid input"
 
 #define MAXINT UINT_MAX
 #define FILE_STDOUT "-"
