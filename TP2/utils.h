@@ -36,6 +36,7 @@
 #define OVERFLOW_CODE 1
 
 #define KILOBYTES 1024
+#define MAIN_MEMORY_SIZE 64 * KILOBYTES
 
 #define N_BITS 16
 

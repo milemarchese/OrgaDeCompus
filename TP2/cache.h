@@ -6,6 +6,7 @@ typedef struct block {
 	int bit_dirty;
 	int tag;
 	unsigned int counter;
+	unsigned char* data;
 } block_t;
 
 typedef struct cache {
@@ -13,9 +14,13 @@ typedef struct cache {
 	unsigned int n_ways;
 	unsigned int cache_size;
 	unsigned int block_size;
+	unsigned int n_bits_idx;
+	unsigned int n_bits_off;
+	unsigned int n_bits_tag;
 	int n_hits;
 	int n_misses;
 } cache_t;
+
 
 void init();
 
