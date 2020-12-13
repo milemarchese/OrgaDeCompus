@@ -39,7 +39,7 @@ void process_line(char* line, FILE* out) {
 		write_byte(arg1, arg2);
 		print_last_access_status(out);
 	} else if (strcmp(cmd, READ) == 0) {
-		printf("%hhu, ", read_byte(arg1));
+		fprintf(out, "%hhu, ", read_byte(arg1));
 		print_last_access_status(out);
 	} else if (strcmp(cmd, MISSRATE) == 0) {
 		fprintf(out, "%d\n", get_miss_rate());

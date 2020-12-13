@@ -15,15 +15,20 @@ const char* VERSION_NUM = "2020\n";
 
 extern cache_t cache;
 
+int help_parameters(int argc, char* argv[]) {
+	if (strcmp(H, argv[1]) == 0 || strcmp(HELP, argv[1]) == 0) {
+		fprintf(stdout, "%s", HELP_MSG);
+		return 1;
+	} else if (strcmp(V, argv[1]) == 0 || strcmp(VERSION, argv[1]) == 0) {
+		fprintf(stdout, "%s",VERSION_NUM);
+		return 1;
+	}
+	return 0;
+}
+
 int validate_parameters(int argc, char* argv[], FILE** in, FILE** out) {
-	for (int i = 1; i < argc - 1; i++){
-		if (strcmp(H, argv[i]) == 0 || strcmp(HELP, argv[i]) == 0) {
-			fprintf(stdout, "%s", HELP_MSG);
-			return -1;
-		} else if (strcmp(V, argv[i]) == 0 || strcmp(VERSION, argv[i]) == 0) {
-			fprintf(stdout, "%s",VERSION_NUM);
-			return -1;
-		} else if (strcmp(O, argv[i]) == 0 || strcmp(OUTPUT, argv[i]) == 0) {
+	for (int i = 1; i < argc - 1; i++) {
+		if (strcmp(O, argv[i]) == 0 || strcmp(OUTPUT, argv[i]) == 0) {
 			if ((i + 1) >= argc) return -1;
 			if (strcmp(FILE_STDOUT, argv[i + 1]) != 0) {
 				*out = fopen(argv[i + 1], "w");
@@ -54,6 +59,10 @@ int validate_parameters(int argc, char* argv[], FILE** in, FILE** out) {
 int main(int argc, char* argv[]) {
 	FILE* out = stdout;
   FILE* in = NULL;
+
+	if (help_parameters(argc, argv)) {
+		return 0;
+	}
 
 	cache.n_ways = 0;
 	cache.block_size = 0;
