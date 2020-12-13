@@ -53,12 +53,12 @@ int validate_parameters(int argc, char* argv[], FILE** in, FILE** out) {
 
 int main(int argc, char* argv[]) {
 	FILE* out = stdout;
-    FILE* in = NULL;
+  FILE* in = NULL;
 
 	cache.n_ways = 0;
 	cache.block_size = 0;
 	cache.cache_size = 0;
-	
+
 	// TODO: Validar si los tamaños de los cache son correctos
 	int arg = validate_parameters(argc, argv, &in, &out);
 	if (arg > 0) {

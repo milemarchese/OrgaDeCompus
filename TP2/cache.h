@@ -19,6 +19,7 @@ typedef struct cache {
 	unsigned int n_bits_tag;
 	int n_hits;
 	int n_misses;
+	int last_hit;
 } cache_t;
 
 
@@ -39,5 +40,7 @@ char read_byte(int address);
 void write_byte(int address, char value);
 
 int get_miss_rate();
+
+void cache_destroy();
 
 #endif

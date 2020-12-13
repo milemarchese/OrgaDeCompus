@@ -7,6 +7,8 @@
 #include "utils.h"
 #include "cache.h"
 
+extern cache_t cache;
+
 void rstrip(char* str) {
 	while (*str != '\0') {
 		if (*str == '\n') {
@@ -14,6 +16,14 @@ void rstrip(char* str) {
 			return;
 		}
 		str += sizeof(char);
+	}
+}
+
+void print_last_access_status(FILE* out) {
+	if (cache.last_hit == 0) {
+		fprintf(out, "Miss\n");
+	} else {
+		fprintf(out, "Hit\n");
 	}
 }
 
@@ -27,8 +37,10 @@ void process_line(char* line, FILE* out) {
 		init();
 	} else if (strcmp(cmd, WRITE) == 0) {
 		write_byte(arg1, arg2);
+		print_last_access_status(out);
 	} else if (strcmp(cmd, READ) == 0) {
-		read_byte(arg1);
+		printf("%hhu, ", read_byte(arg1));
+		print_last_access_status(out);
 	} else if (strcmp(cmd, MISSRATE) == 0) {
 		fprintf(out, "%d\n", get_miss_rate());
 	} else {
@@ -46,4 +58,5 @@ void process_input(FILE* in, FILE* out) {
 		process_line(line, out);
 	}
 	free(line);
+	cache_destroy();
 }

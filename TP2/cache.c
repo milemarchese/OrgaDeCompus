@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "utils.h"
 
 
@@ -76,26 +77,23 @@ void update_lru(block_t* set){
   }
 }
 
-// debe leer el bloque blocknum de memoria y guardarlo en el lugar que le corresponda en la memoria caché.
 void read_block(int blocknum) {
 	int setnum = blocknum % (1 << cache.n_bits_idx);
 	int tag = blocknum >> cache.n_bits_idx;
 	int way = find_lru(setnum);
 
-	// Si el bloque es dirty, escribir en memoria principal
-	if (cache.cache[setnum][way].bit_dirty == 1) {
+	if (is_dirty(setnum, way)) {
 		write_block(way, setnum);
 	}
 
 	update_lru(cache.cache[setnum]);
 	cache.cache[setnum][way].tag = tag;
-	cache.cache[setnum][way].bit_dirty = 0;
-	cache.cache[setnum][way].bit_valid = 1;
+	cache.cache[setnum][way].bit_dirty = false;
+	cache.cache[setnum][way].bit_valid = true;
 	cache.cache[setnum][way].counter = 0;
 	memcpy(cache.cache[setnum][way].data, &main_memory[blocknum << cache.n_bits_off], cache.block_size);
 }
 
-// debe escribir en memoria los datos contenidos en el bloque setnum de la vıa way.
 void write_block(int way, int setnum) {
 	block_t block = cache.cache[setnum][way];
 
@@ -104,62 +102,72 @@ void write_block(int way, int setnum) {
 }
 
 
+/*
+ * Finds the block's way with matching tag in the set.
+ * If it doesn't exist, returns -1.
+ */
+int find_block_way(block_t* set, int tag) {
+	for (int i = 0; i < cache.n_ways; i++) {
+		if (set[i].tag == tag && set[i].bit_valid) {
+			return i;
+		}
+	}
+	return -1;
+}
 
+/*
+ * Finds the block's address. If the block isn't in the cache, it loads it.
+ */
+block_t* find_block(int address) {
+	int idx = find_set(address);
+	int tag = address >> (cache.n_bits_idx + cache.n_bits_off);
+	block_t* set = cache.cache[idx];
+
+	int way = find_block_way(set, tag);
+
+	if (way != -1) { // Found the block for the given tag.
+		update_lru(set);
+		set[way].counter = 0;
+		cache.n_hits++;
+		cache.last_hit = true;
+		return &set[way];
+	}
+
+	// Didn't find the block in the cache, so we load it and return the new block.
+	read_block(address >> cache.n_bits_off);
+	way = find_block_way(set, tag);
+	cache.n_misses++;
+	cache.last_hit = false;
+	return &set[way];
+}
 
 
 char read_byte(int address) {
-	int idx = find_set(address);
-	int tag = address >> (cache.n_bits_idx + cache.n_bits_off);
 	int offset = address % (1 << cache.n_bits_off);
-	block_t* set = cache.cache[idx];
-
-	for (int i = 0; i < cache.n_ways; i++) {
-		if (set[i].tag == tag && set[i].bit_valid) {
-			// TODO: Cambiar a archivo output
-			printf("Hit, read %d \n", set[i].data[offset]);
-      update_lru(set);
-			set[i].counter = 0;
-			cache.n_hits++;
-			return set[i].data[offset];
-		}
-	}
-
-	cache.n_misses++;
-	read_block(address >> cache.n_bits_off);
-	// TODO: Cambiar a archivo output
-	printf("Miss, read %d \n", main_memory[address]);
-	return main_memory[address];
+	block_t* block = find_block(address);
+	return block->data[offset];
 }
 
 
 void write_byte(int address, char value) {
-
-	int idx = find_set(address);
-	int tag = address >> (cache.n_bits_idx + cache.n_bits_off);
 	int offset = address % (1 << cache.n_bits_off);
-	block_t* set = cache.cache[idx];
-
-	for (int i = 0; i < cache.n_ways; i++) {
-		if (set[i].tag == tag && set[i].bit_valid) {
-			// TODO: Cambiar a archivo output
-			printf("Hit\n");
-      update_lru(set);
-			set[i].counter = 0;
-			cache.n_hits++;
-			set[i].data[offset] = value;
-			return;
-		}
-	}
-
-	// Aclarar en el informe que para simplificar el codigo,
-	// PRIMERO se escribe en memoria y despues se levanta en cache.
-	printf("Miss\n");
-	main_memory[address] = value;
-	read_block(address >> cache.n_bits_off);
-	cache.n_misses++;
+	block_t* block = find_block(address);
+	block->data[offset] = value;
+	block->bit_dirty = true;
 }
 
 
 int get_miss_rate() {
 	return (cache.n_misses * 100 / (cache.n_hits + cache.n_misses));
+}
+
+void cache_destroy() {
+	unsigned int n_idx = 1 << cache.n_bits_idx;
+	for (unsigned int i = 0; i < n_idx; i++) {
+		for (unsigned int j = 0; j < cache.n_ways; j++) {
+			free(cache.cache[i][j].data);
+		}
+		free(cache.cache[i]);
+	}
+	free(cache.cache);
 }
