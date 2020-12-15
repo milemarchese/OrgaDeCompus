@@ -38,9 +38,9 @@ void init() {
 
 	cache.n_hits = 0;
 	cache.n_misses = 0;
-  cache.n_bits_idx = log_2(n_idx);
-  cache.n_bits_off = log_2(cache.block_size);
-  cache.n_bits_tag = N_BITS - cache.n_bits_idx - cache.n_bits_off;
+  	cache.n_bits_idx = log_2(n_idx);
+  	cache.n_bits_off = log_2(cache.block_size);
+  	cache.n_bits_tag = N_BITS - cache.n_bits_idx - cache.n_bits_off;
 	memset(main_memory, 0, MAIN_MEMORY_SIZE);
 }
 
