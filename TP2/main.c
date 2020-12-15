@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <errno.h>
+#include <math.h>
 #include "utils.h"
 #include "cache.h"
 #include "helper.h"
@@ -58,7 +59,7 @@ int validate_parameters(int argc, char* argv[], FILE** in, FILE** out) {
 
 int main(int argc, char* argv[]) {
 	FILE* out = stdout;
-  FILE* in = NULL;
+  	FILE* in = NULL;
 
 	if (help_parameters(argc, argv)) {
 		return 0;
@@ -68,7 +69,6 @@ int main(int argc, char* argv[]) {
 	cache.block_size = 0;
 	cache.cache_size = 0;
 
-	// TODO: Validar si los tamaños de los cache son correctos
 	int arg = validate_parameters(argc, argv, &in, &out);
 	if (arg > 0) {
 		return arg;
@@ -87,9 +87,15 @@ int main(int argc, char* argv[]) {
 	} else if (in == NULL) {
 		fprintf(stderr, "Failed to open input file\n");
 		return 1;
+	} else if ((cache.cache_size * KILOBYTES) >= pow(2, N_BITS)) {
+		fprintf(stderr, "Incorrect cache size\n");
+		return 1;
+	} else if ((cache.cache_size * KILOBYTES) % cache.block_size) {
+		fprintf(stderr, "Incorrect block size\n");
+		return 1;
 	} else if (arg < 0) {
 		return 0;
-	}
+	} 
 
 	process_input(in, out);
 
