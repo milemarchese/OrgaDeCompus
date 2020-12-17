@@ -14,7 +14,7 @@ cache_t cache;
 
 
 /*
- * Returns the number of bits of x
+ * Returns the number of bits required to represent x.
  */
 unsigned int log_2(unsigned int x) {
 	int result = 0;
@@ -22,10 +22,11 @@ unsigned int log_2(unsigned int x) {
 	return result;
 }
 
-/*
- * Initialize the cache sets as invalid, the simulated memory at 0, and the misses rate at 0.
- */
 void init() {
+	if (cache.cache != NULL) {
+		cache_destroy();
+	}
+
 	unsigned int n_idx = cache.cache_size * KILOBYTES / (cache.block_size * cache.n_ways);
 	cache.cache = calloc(n_idx, sizeof(block_t*));
 	for (unsigned int i = 0; i < n_idx; i++) {
@@ -38,14 +39,17 @@ void init() {
 
 	cache.n_hits = 0;
 	cache.n_misses = 0;
-  	cache.n_bits_idx = log_2(n_idx);
-  	cache.n_bits_off = log_2(cache.block_size);
-  	cache.n_bits_tag = N_BITS - cache.n_bits_idx - cache.n_bits_off;
+	cache.n_bits_idx = log_2(n_idx);
+	cache.n_bits_off = log_2(cache.block_size);
+	cache.n_bits_tag = N_BITS - cache.n_bits_idx - cache.n_bits_off;
 	memset(main_memory, 0, MAIN_MEMORY_SIZE);
 }
 
 
 unsigned int find_set(int address) {
+	if (cache.n_bits_idx == 0) {
+		return 0;
+	}
 	address = address % (1 << (cache.n_bits_idx + cache.n_bits_off));
 	address = address >> cache.n_bits_off;
 	return address;
@@ -72,17 +76,22 @@ unsigned int is_dirty(int way, int setnum) {
 }
 
 void update_lru(block_t* set){
-  for(int i = 0 ; i < cache.n_ways ; i++) {
-    set[i].counter++;
-  }
+	for(int i = 0 ; i < cache.n_ways ; i++) {
+		set[i].counter++;
+	}
 }
 
 void read_block(int blocknum) {
 	int setnum = blocknum % (1 << cache.n_bits_idx);
 	int tag = blocknum >> cache.n_bits_idx;
+	
+	if (cache.n_bits_idx == 0) {
+		setnum = 0;
+	}
+
 	int way = find_lru(setnum);
 
-	if (is_dirty(setnum, way)) {
+	if (is_dirty(way, setnum)) {
 		write_block(way, setnum);
 	}
 
@@ -170,4 +179,5 @@ void cache_destroy() {
 		free(cache.cache[i]);
 	}
 	free(cache.cache);
+	cache.cache = NULL;
 }

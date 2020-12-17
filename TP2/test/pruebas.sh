@@ -18,7 +18,7 @@ for x in *_in; do
 
     args="-cs ${cachesize} -w ${nways} -bs ${blocksize} ${cmdfile}"
 
-    (cat ${b}_in | $PROGRAMA ${args} > out_tmp 2> err_tmp; \
+    ($PROGRAMA ${args} > out_tmp 2> err_tmp; \
         python3 csvdiff.py ${b}_out out_tmp && \
         echo "OK") || { RET=$?; echo "ERROR"; }
 
@@ -39,8 +39,8 @@ for x in *_in; do
     args="-cs ${cachesize} -w ${nways} -bs ${blocksize} ${cmdfile}"
 
 
-    valgrind --quiet --leak-check=full --track-origins=yes --error-exitcode=2 \
-        cat ${b}_in | $PROGRAMA ${args} > out_tmp 2> err_tmp; >/dev/null && \
+    valgrind --error-exitcode=2 --leak-check=full --show-leak-kinds=all --track-origins=yes \
+        $PROGRAMA ${args} > out_tmp 2> err_tmp && \
         echo "OK" || { RET=$?; echo "ERROR"; }
 
 done

@@ -33,9 +33,15 @@ void process_line(char* line, FILE* out) {
 
 	sscanf(line, "%[^ ] %u, %u", cmd, &arg1, &arg2);
 
+	arg1 = arg1 % (1 << N_BITS);
 	if (strcmp(cmd, INIT) == 0) {
 		init();
-	} else if (strcmp(cmd, WRITE) == 0) {
+	} else if (cache.cache == NULL) {
+		fprintf(out, "Missing init command\n");
+		return;
+	}
+
+	else if (strcmp(cmd, WRITE) == 0) {
 		write_byte(arg1, arg2);
 		print_last_access_status(out);
 	} else if (strcmp(cmd, READ) == 0) {

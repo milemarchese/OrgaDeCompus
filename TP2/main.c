@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
 	cache.n_ways = 0;
 	cache.block_size = 0;
 	cache.cache_size = 0;
+	cache.cache = NULL;
 
 	int arg = validate_parameters(argc, argv, &in, &out);
 	if (arg > 0) {
@@ -98,6 +99,9 @@ int main(int argc, char* argv[]) {
 	} 
 
 	process_input(in, out);
+
+	fclose(in);
+	fclose(out);
 
 	return 0;
 }
