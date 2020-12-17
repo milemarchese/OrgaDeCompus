@@ -14,7 +14,7 @@ cache_t cache;
 
 
 /*
- * Returns the number of bits of x
+ * Returns the number of bits required to represent x.
  */
 unsigned int log_2(unsigned int x) {
 	int result = 0;
@@ -22,9 +22,6 @@ unsigned int log_2(unsigned int x) {
 	return result;
 }
 
-/*
- * Initialize the cache sets as invalid, the simulated memory at 0, and the misses rate at 0.
- */
 void init() {
 	unsigned int n_idx = cache.cache_size * KILOBYTES / (cache.block_size * cache.n_ways);
 	cache.cache = calloc(n_idx, sizeof(block_t*));
