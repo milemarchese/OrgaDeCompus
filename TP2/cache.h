@@ -75,7 +75,7 @@ void write_byte(int address, char value);
 int get_miss_rate();
 
 /*
-* Destroys cache.
+* Destroys the cache.
 */
 void cache_destroy();
 
