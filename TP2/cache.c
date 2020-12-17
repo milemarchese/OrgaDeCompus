@@ -67,8 +67,8 @@ unsigned int find_lru(int setnum) {
 }
 
 
-unsigned int is_dirty(int way, int blocknum) {
-	return cache.cache[blocknum][way].bit_dirty;
+unsigned int is_dirty(int way, int setnum) {
+	return cache.cache[setnum][way].bit_dirty;
 }
 
 void update_lru(block_t* set){
