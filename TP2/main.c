@@ -11,7 +11,7 @@
 #include "cache.h"
 #include "helper.h"
 
-const char* HELP_MSG = "Usage:\n\ttp2 -h\n\ttp2 -V\n\ttp2 options archivo\nOptions:\n\t-h,\t--help\tImprime ayuda.\n\t-V,\t--version\tVersión del programa.\n\t-o,\t--output\tArchivo de salida.\n\t-w,\t--ways\tCantidad de vı́as.\n\t-cs,\t--cachesize\tTamaño del caché en kilobytes.\n\t-bs,\t--blocksize\tTamaño de bloque en bytes.\nExamples:\n\ttp2 -w 4 -cs 8 -bs 16 prueba1.mem\n";
+const char* HELP_MSG = "Usage:\n\ttp2 -h\n\ttp2 -V\n\ttp2 [options] in_file\nOptions:\n\t-h,\t--help\t\tPrints help message.\n\t-V,\t--version\tProgram version.\n\t-o,\t--output\tOutput file.\n\t-w,\t--ways\t\tWay count.\n\t-cs,\t--cachesize\tSize of the cache in kilobytes.\n\t-bs,\t--blocksize\tSize of the cache block in bytes.\nExamples:\n\ttp2 -w 4 -cs 8 -bs 16 prueba1.mem\n";
 const char* VERSION_NUM = "2020\n";
 
 extern cache_t cache;
