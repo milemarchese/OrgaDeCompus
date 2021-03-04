@@ -1,9 +1,7 @@
-## TP0
+## 66:20 Organización de Computadoras
 
-El programa a escribir, en lenguaje C, recibirá un nombre de archivo (o
-el archivo mismo por stdin) y devolverá ese mismo archivo codificado en
-base64, o bien decodificado desde base64 si se utiliza la opción -d.
-
-Enunciado: https://campus.fi.uba.ar/pluginfile.php/411476/mod_resource/content/1/tp0-q2-2020.pdf
-
-Informe: https://www.overleaf.com/read/pknvjhycfkgn
+En los diferentes links se pueden obtener tanto los enunciados de cada trabajo, como los informes correspondientes: 
+- TP0: https://drive.google.com/drive/folders/1QUpMO4IzyGIpmcf9JBxg-MQMdKtETFLM?usp=sharing
+- TP1: https://drive.google.com/drive/folders/1mnQHhFGPDFbrIRW-XA3zYc1-A7KjYOFR?usp=sharing
+- TP2: https://drive.google.com/drive/folders/1mJvY9KZ8_dYbDpsnXtcbhZQH-an82u6q?usp=sharing
+- TP3: https://drive.google.com/drive/folders/1YYkGCURo3Xs3cK3xHIId2AZyfY1diCWg?usp=sharing
